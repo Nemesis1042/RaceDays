@@ -11,7 +11,7 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Pfad zur Datei
-datei_pfad = 'Carerabahn_02/RaceDays_Beispiel (1).ods' # Pfad zur Datei
+datei_pfad = 'RaceDays/static/RaceDays_Beispiel (1).ods' # Pfad zur Datei
 
 # Globale Variable für DataFrame
 df = pd.DataFrame()
