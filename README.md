@@ -1,5 +1,7 @@
 # RaceDays
 
+<<<<<<< HEAD
+
 ## Installation der benötigten Bibliotheken
 
 Um dieses Flask-Projekt erfolgreich auszuführen, müssen die folgenden Python-Bibliotheken installiert werden:
@@ -17,3 +19,5 @@ Führe den folgenden Befehl in deinem Terminal aus, um alle benötigten Biblioth
 pip install flask pandas openpyxl odfpy
 
 ```
+
+=======
