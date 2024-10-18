@@ -11,7 +11,7 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Pfad zur Datei
-datei_pfad = 'RaceDays/static/RaceDays_Beispiel (1).ods' # Pfad zur Datei
+datei_pfad = '/home/arkatosh/GIT/RaceDays/static/RaceDays_Beispiel (1).ods' # Pfad zur Datei
 
 # Globale Variable für DataFrame
 df = pd.DataFrame()
@@ -21,7 +21,7 @@ def daten_laden():
     global df
     logging.info(f"Versuche Datei zu lesen: {datei_pfad}")
     try:
-        if datei_pfad.endswith('.xlsx'):
+        if datei_pfad.endswith('.xlsx') or datei_pfad.endswith('.xlsm'):
             df = pd.read_excel(datei_pfad, engine='openpyxl', sheet_name='Tabelle1')
         elif datei_pfad.endswith('.ods'):
             df = pd.read_excel(datei_pfad, engine='odf', sheet_name='Tabelle1')
