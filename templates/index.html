@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrera Race Day Ergebnisse</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Carrera Race Day Ergebnisse</h1>
+        
+        <div class="row">
+            {% for category, rows in data.items() %}
+                <div class="col-md-6 mb-4">
+                    <h3>{{ category }}</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                {% for key in rows[0].keys() %}
+                                    <th>{{ key }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                                <tr>
+                                    {% for value in row.values() %}
+                                        <td>{{ value }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function aktualisiereDaten() {
+            fetch('/daten')
+                .then(response => response.json())
+                .then(data => {
+                    for (let category in data) {
+                        let table = document.querySelector(`h3:contains('${category}')`).nextElementSibling;
+                        let tbody = table.querySelector('tbody');
+                        tbody.innerHTML = '';
+                        data[category].forEach(row => {
+                            let tr = document.createElement('tr');
+                            Object.values(row).forEach(value => {
+                                let td = document.createElement('td');
+                                td.textContent = value;
+                                tr.appendChild(td);
+                            });
+                            tbody.appendChild(tr);
+                        });
+                    }
+                })
+                .catch(error => console.error('Fehler beim Abrufen der Daten:', error));
+        }
+
+        setInterval(aktualisiereDaten, 2000); // Aktualisiere alle 5 Minuten (300000 Millisekunden)
+    </script>
+    <script>
+        document.body.style.zoom = "95%"; // Verkleinere die Seite auf 85% ihrer ursprünglichen Größe
+    </script>
+    
+</body>
+</html>
