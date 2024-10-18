@@ -11,7 +11,7 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Pfad zur Datei
-datei_pfad = '/home/arkatosh/GIT/RaceDays/static/RaceDays_Beispiel (1).ods' # Pfad zur Datei
+datei_pfad = 'C:\RaceDays\Besten_Liste_Excel\RaceDays_Beispiel.xlsx' # Pfad zur Datei
 
 # Globale Variable für DataFrame
 df = pd.DataFrame()
@@ -21,7 +21,7 @@ def daten_laden():
     global df
     logging.info(f"Versuche Datei zu lesen: {datei_pfad}")
     try:
-        if datei_pfad.endswith('.xlsx') or datei_pfad.endswith('.xlsm'):
+        if datei_pfad.endswith('.xlsx'):
             df = pd.read_excel(datei_pfad, engine='openpyxl', sheet_name='Tabelle1')
         elif datei_pfad.endswith('.ods'):
             df = pd.read_excel(datei_pfad, engine='odf', sheet_name='Tabelle1')
@@ -37,8 +37,8 @@ def daten_aktualisieren():
         logging.debug("Aktualisiere die Daten")
         daten_laden()
         logging.debug("Daten erfolgreich aktualisiert")
-        time.sleep(300)  # 5 Minuten warten
-        #time.sleep(10)  # 10 Sekunden warten
+        #time.sleep(300)  # 5 Minuten warten
+        time.sleep(60)  # 60 Sekunden warten
 
 # Starte den Aktualisierungsprozess in einem separaten Thread
 threading.Thread(target=daten_aktualisieren, daemon=True).start()

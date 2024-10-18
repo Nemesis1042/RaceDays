@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrera Race Day Ergebnisse</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-
+    <meta http-equiv="refresh" content="20">
 </head>
 <body>
     <div class="container mt-5">
@@ -44,7 +44,6 @@
             fetch('/daten')
                 .then(response => response.json())
                 .then(data => {
-                    // Aktualisiere die Daten auf der Seite
                     for (let category in data) {
                         let table = document.querySelector(`h3:contains('${category}')`).nextElementSibling;
                         let tbody = table.querySelector('tbody');
@@ -59,16 +58,66 @@
                             tbody.appendChild(tr);
                         });
                     }
-                    // Lade die Seite neu
-                    location.reload();
                 })
                 .catch(error => console.error('Fehler beim Abrufen der Daten:', error));
         }
 
-        setInterval(aktualisiereDaten, 2000); // Aktualisiere alle 5 Minuten (300000 Millisekunden)
+        // Aktualisiere alle 10 Sekunden
+        setInterval(aktualisiereDaten, 10000); // Aktualisiere alle 10 Sekunden (10000 Millisekunden)
+
+        // Funktion zum Scrollen über 10 Sekunden
+        function scrollToBottom(duration) {
+            const start = document.documentElement.scrollTop || document.body.scrollTop;
+            const end = document.body.scrollHeight;
+            const distance = end - start;
+            const startTime = performance.now();
+
+            function animateScroll(currentTime) {
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1); // Normalisiere den Fortschritt
+                const scrollStep = start + distance * progress;
+
+                window.scrollTo(0, scrollStep);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateScroll); // Fortsetzen, bis der Fortschritt 100% erreicht
+                }
+            }
+
+            requestAnimationFrame(animateScroll);
+        }
+
+        // Starte das Scrollen nach 10 Sekunden
+        setTimeout(() => scrollToBottom(10000), 10000); // 10000 Millisekunden = 10 Sekunden
+
+        // Funktion zum Scrollen nach oben über 10 Sekunden
+        function scrollToTop(duration) {
+            const start = document.documentElement.scrollTop || document.body.scrollTop;
+            const end = 0; // Ziel ist 0, um ganz nach oben zu scrollen
+            const distance = start - end; // Differenz zwischen aktueller Position und dem oberen Ende der Seite
+            const startTime = performance.now();
+
+            function animateScroll(currentTime) {
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1); // Normalisiere den Fortschritt
+                const scrollStep = start - distance * progress; // Subtrahiere, um nach oben zu scrollen
+
+                window.scrollTo(0, scrollStep);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateScroll); // Fortsetzen, bis der Fortschritt 100% erreicht ist
+                }
+            }
+
+            requestAnimationFrame(animateScroll);
+        }
+
+        // Starte das Scrollen nach oben nach 20 Sekunden
+        setTimeout(() => scrollToTop(10000), 20000); // 20000 Millisekunden = 20 Sekunden
+
     </script>
     <script>
-        document.body.style.zoom = "95%"; // Verkleinere die Seite auf 85% ihrer ursprünglichen Größe
+        document.body.style.zoom = "95%"; // Verkleinere die Seite auf 95% ihrer ursprünglichen Größe
     </script>
     
 </body>
