@@ -5,36 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrera Race Day Ergebnisse</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <meta http-equiv="refresh" content="20">
+    <meta http-equiv="refresh" content="30">
+
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">Carrera Race Day Ergebnisse</h1>
-        
-        <div class="row">
-            {% for category, rows in data.items() %}
-                <div class="col-md-6 mb-4">
-                    <h3>{{ category }}</h3>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                {% for key in rows[0].keys() %}
-                                    <th>{{ key }}</th>
-                                {% endfor %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in rows %}
+    <div class="container">
+        <h1 class="text-center">Race Days 2025</h1>
+
+        <div class="table-container">
+            <div class="row">
+                {% for category, rows in data.items() %}
+                    <div class="col-md-6 mb-4">
+                        <h3>{{ category }}</h3>
+                        <table class="table table-bordered">
+                            <thead>
                                 <tr>
-                                    {% for value in row.values() %}
-                                        <td>{{ value }}</td>
+                                    {% for key in rows[0].keys() %}
+                                        {% if loop.index == 1 %}
+                                            <th class="red">{{ key }}</th>
+                                        {% elif loop.index == 2 %}
+                                            <th class="blue">{{ key }}</th>
+                                        {% elif loop.index == 3 %}
+                                            <th class="green">{{ key }}</th>
+                                        {% elif loop.index == 4 %}
+                                            <th class="orange">{{ key }}</th>
+                                        {% elif loop.index == 5 %}
+                                            <th class="pink">{{ key }}</th>
+                                        {% else %}
+                                            <th>{{ key }}</th> <!-- Standard, falls keine spezifische Farbe zugewiesen wurde -->
+                                        {% endif %}
                                     {% endfor %}
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% endfor %}
+                            </thead>                                                       
+                                                                                        
+                            </thead>
+                            <tbody>
+                                {% for row in rows %}
+                                    <tr>
+                                        {% for value in row.values() %}
+                                            <td>{{ value }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
@@ -62,63 +79,67 @@
                 .catch(error => console.error('Fehler beim Abrufen der Daten:', error));
         }
 
-        // Aktualisiere alle 10 Sekunden
-        setInterval(aktualisiereDaten, 10000); // Aktualisiere alle 10 Sekunden (10000 Millisekunden)
-
-        // Funktion zum Scrollen über 10 Sekunden
-        function scrollToBottom(duration) {
-            const start = document.documentElement.scrollTop || document.body.scrollTop;
-            const end = document.body.scrollHeight;
+        // Funktion zum langsamen Scrollen der Tabelle nach unten
+        function scrollTableToBottom(container, duration) {
+            const start = container.scrollTop;
+            const end = container.scrollHeight - container.clientHeight;
             const distance = end - start;
             const startTime = performance.now();
 
             function animateScroll(currentTime) {
                 const timeElapsed = currentTime - startTime;
-                const progress = Math.min(timeElapsed / duration, 1); // Normalisiere den Fortschritt
+                const progress = Math.min(timeElapsed / duration, 1);
                 const scrollStep = start + distance * progress;
 
-                window.scrollTo(0, scrollStep);
+                container.scrollTop = scrollStep;
 
                 if (progress < 1) {
-                    requestAnimationFrame(animateScroll); // Fortsetzen, bis der Fortschritt 100% erreicht
+                    requestAnimationFrame(animateScroll);
                 }
             }
 
             requestAnimationFrame(animateScroll);
         }
 
-        // Starte das Scrollen nach 10 Sekunden
-        setTimeout(() => scrollToBottom(10000), 10000); // 10000 Millisekunden = 10 Sekunden
-
-        // Funktion zum Scrollen nach oben über 10 Sekunden
-        function scrollToTop(duration) {
-            const start = document.documentElement.scrollTop || document.body.scrollTop;
-            const end = 0; // Ziel ist 0, um ganz nach oben zu scrollen
-            const distance = start - end; // Differenz zwischen aktueller Position und dem oberen Ende der Seite
+        // Funktion zum langsamen Scrollen der Tabelle nach oben
+        function scrollTableToTop(container, duration) {
+            const start = container.scrollTop;
+            const end = 0;
+            const distance = start - end;
             const startTime = performance.now();
 
             function animateScroll(currentTime) {
                 const timeElapsed = currentTime - startTime;
-                const progress = Math.min(timeElapsed / duration, 1); // Normalisiere den Fortschritt
-                const scrollStep = start - distance * progress; // Subtrahiere, um nach oben zu scrollen
+                const progress = Math.min(timeElapsed / duration, 1);
+                const scrollStep = start - distance * progress;
 
-                window.scrollTo(0, scrollStep);
+                container.scrollTop = scrollStep;
 
                 if (progress < 1) {
-                    requestAnimationFrame(animateScroll); // Fortsetzen, bis der Fortschritt 100% erreicht ist
+                    requestAnimationFrame(animateScroll);
                 }
             }
 
             requestAnimationFrame(animateScroll);
         }
 
-        // Starte das Scrollen nach oben nach 20 Sekunden
-        setTimeout(() => scrollToTop(10000), 20000); // 20000 Millisekunden = 20 Sekunden
+        // Endlosschleife zwischen Runter- und Hochscrollen der Tabelle
+        function startScrollingCycle(container) {
+            scrollTableToBottom(container, 10000); // Scrolle in 10 Sekunden nach unten
+            setTimeout(() => {
+                scrollTableToTop(container, 10000); // Warte und scrolle in 10 Sekunden nach oben
+                setTimeout(() => startScrollingCycle(container), 22000); // Starte den Zyklus erneut
+            }, 12000); // Warte insgesamt 12 Sekunden
+        }
 
+        // Starte den Zyklus des Scrollens nach 10 Sekunden für den Tabellen-Container
+        document.addEventListener("DOMContentLoaded", function() {
+            const tableContainer = document.querySelector('.table-container');
+            setTimeout(() => startScrollingCycle(tableContainer), 10000);
+        });
     </script>
     <script>
         document.body.style.zoom = "95%"; // Verkleinere die Seite auf 95% ihrer ursprünglichen Größe
     </script>
-    
 </body>
 </html>

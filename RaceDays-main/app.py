@@ -11,7 +11,7 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Pfad zur Datei
-datei_pfad = 'C:\RaceDays\Besten_Liste_Excel\RaceDays_Beispiel.xlsx' # Pfad zur Datei
+datei_pfad = 'Z:\RaceDays\Besten_Liste_Excel\RaceDays_Beispiel.xlsx' # Pfad zur Datei
 
 # Globale Variable für DataFrame
 df = pd.DataFrame()
