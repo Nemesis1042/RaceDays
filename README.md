@@ -16,4 +16,3 @@ Führe den folgenden Befehl in deinem Terminal aus, um alle benötigten Biblioth
 pip install flask pandas openpyxl odfpy
 
 ```
-# RaceDays
