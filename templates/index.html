@@ -16,24 +16,12 @@
             <div class="row">
                 {% for category, rows in data.items() %}
                     <div class="col-md-6 mb-4">
-                        <h3>{{ category }}</h3>
+                        <h3 class="{{ colors[category] }}">{{ category }}</h3>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     {% for key in rows[0].keys() %}
-                                        {% if loop.index == 1 %}
-                                            <th class="red">{{ key }}</th>
-                                        {% elif loop.index == 2 %}
-                                            <th class="blue">{{ key }}</th>
-                                        {% elif loop.index == 3 %}
-                                            <th class="green">{{ key }}</th>
-                                        {% elif loop.index == 4 %}
-                                            <th class="orange">{{ key }}</th>
-                                        {% elif loop.index == 5 %}
-                                            <th class="pink">{{ key }}</th>
-                                        {% else %}
-                                            <th>{{ key }}</th> <!-- Standard, falls keine spezifische Farbe zugewiesen wurde -->
-                                        {% endif %}
+                                        <th>{{ key }}</th>
                                     {% endfor %}
                                 </tr>
                             </thead>                                                       
@@ -80,7 +68,7 @@
         }
 
         // Funktion zum langsamen Scrollen der Tabelle nach unten
-        function scrollTableToBottom(container, duration) {
+        /*function scrollTableToBottom(container, duration) {
             const start = container.scrollTop;
             const end = container.scrollHeight - container.clientHeight;
             const distance = end - start;
@@ -99,7 +87,7 @@
             }
 
             requestAnimationFrame(animateScroll);
-        }
+        }*/
 
         // Funktion zum langsamen Scrollen der Tabelle nach oben
         function scrollTableToTop(container, duration) {
@@ -139,7 +127,7 @@
         });
     </script>
     <script>
-        document.body.style.zoom = "95%"; // Verkleinere die Seite auf 95% ihrer ursprünglichen Größe
+        document.body.style.zoom = "85%"; // Verkleinere die Seite auf 95% ihrer ursprünglichen Größe
     </script>
 </body>
 </html>

@@ -4,79 +4,87 @@ import logging
 import threading
 import time
 
-# Flask-Anwendung initialisieren
+# Initialize Flask application
 app = Flask(__name__)
 
-# Konfiguriere Logging
+# Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Pfad zur Datei
-datei_pfad = 'Z:\RaceDays\Besten_Liste_Excel\RaceDays_Beispiel.xlsx' # Pfad zur Datei
-
-# Globale Variable für DataFrame
+# Path to the Excel file
+datei_pfad = 'static/RaceDays_Beispiel.xlsx'
 df = pd.DataFrame()
 
-# Funktion zum Laden der Daten
+# Column configuration for each category
+columns_info = {
+    "Ak1 (5-8 Jahre)": ["Platz", "Ak1(5-8 Jahre)", "Zeit", "Bahn"],
+    "Ak2 (9-12 Jahre)": ["Platz.1", "Ak2(9-12 Jahre)", "Zeit.1", "Bahn.1"],
+    "Ak3 (13-17 Jahre)": ["Platz.2", "Ak3(13-17 Jahre)", "Zeit.2", "Bahn.2"],
+    "Ak4 (18+ Jahre)": ["Platz.3", "Ak4(18+ Jahre)", "Zeit.3", "Bahn.3"],
+    "Ak1 Mitarbeiter": ["Platz.4", "Ak1 Mitarbeiter", "Zeit.4", "Bahn.4"]
+}
+
+# Farben für jede Kategorie (im HTML-Template verwendet)
+colors = {
+    "Ak1 (5-8 Jahre)": "bg-red",
+    "Ak2 (9-12 Jahre)": "bg-green",
+    "Ak3 (13-17 Jahre)": "bg-yellow",
+    "Ak4 (18+ Jahre)": "bg-blue",
+    "Ak1 Mitarbeiter": "bg-purple"
+}
+
+# Function to load data from Excel file
 def daten_laden():
     global df
-    logging.info(f"Versuche Datei zu lesen: {datei_pfad}")
+    logging.info(f"Attempting to read file: {datei_pfad}")
     try:
         if datei_pfad.endswith('.xlsx'):
             df = pd.read_excel(datei_pfad, engine='openpyxl', sheet_name='Tabelle1')
         elif datei_pfad.endswith('.ods'):
             df = pd.read_excel(datei_pfad, engine='odf', sheet_name='Tabelle1')
         else:
-            raise ValueError("Nicht unterstütztes Dateiformat. Nur .xlsx und .ods werden unterstützt.")
-        logging.debug(f"Datei erfolgreich gelesen. Anzahl der Zeilen: {len(df)}")
+            raise ValueError("Unsupported file format. Only .xlsx and .ods are supported.")
+        logging.debug(f"File successfully read. Rows: {len(df)}")
     except Exception as e:
-        logging.error(f"Fehler beim Lesen der Datei: {e}")
-        df = pd.DataFrame()  # Leere DataFrame für den Fall eines Fehlers
-# Hintergrundprozess zum Aktualisieren der Daten alle 5 Minuten
+        logging.error(f"Error reading file: {e}")
+        df = pd.DataFrame()  # Fallback to an empty DataFrame in case of error
+
+# Background process to update data every 5 minutes
 def daten_aktualisieren():
     while True:
-        logging.debug("Aktualisiere die Daten")
+        logging.debug("Updating data")
         daten_laden()
-        logging.debug("Daten erfolgreich aktualisiert")
-        #time.sleep(300)  # 5 Minuten warten
-        time.sleep(60)  # 60 Sekunden warten
+        logging.debug("Data successfully updated")
+        time.sleep(300)  # Wait 5 minutes
 
-# Starte den Aktualisierungsprozess in einem separaten Thread
+# Start the background update process
 threading.Thread(target=daten_aktualisieren, daemon=True).start()
 
-# Route zur Anzeige der Hauptseite
+# Route to render the main page
 @app.route('/')
 def index():
-    columns_info = {
-        "Ak1 (5-8 Jahre)": ["Platz", "Ak1(5-8 Jahre)", "Zeit", "Bahn"],
-        "Ak2 (9-12 Jahre)": ["Platz", "Ak2(9-12 Jahre)", "Zeit", "Bahn"],
-        "Ak3 (13-17 Jahre)": ["Platz", "Ak3(13-17 Jahre)", "Zeit", "Bahn"],
-        "Ak4 (18+ Jahre)": ["Platz", "Ak4(18+ Jahre)", "Zeit", "Bahn"],
-        "Ak1 Mitarbeiter": ["Platz", "Ak1 Mitarbeiter", "Zeit", "Bahn"]
-    }
-    
     data = {}
     for label, cols in columns_info.items():
-        data[label] = df[cols].to_dict(orient='records')
-    
-    return render_template('index.html', data=data)
+        try:
+            data[label] = df[cols].to_dict(orient='records')
+        except KeyError as e:
+            logging.error(f"Missing column in DataFrame: {e}")
+            data[label] = []  # Fallback to empty data if columns are missing
 
-# Route zur Datenaktualisierung für AJAX-Requests
+    return render_template('index.html', data=data, colors=colors)
+
+# Route to provide data updates for AJAX requests
 @app.route('/daten')
 def daten():
-    columns_info = {
-        "Ak1 (5-8 Jahre)": ["Platz", "Ak1(5-8 Jahre)", "Zeit", "Bahn"],
-        "Ak2 (9-12 Jahre)": ["Platz.1", "Ak2(9-12 Jahre)", "Zeit.1", "Bahn.1"],
-        "Ak3 (13-17 Jahre)": ["Platz.2", "Ak3(13-17 Jahre)", "Zeit.2", "Bahn.2"],
-        "Ak4 (18+ Jahre)": ["Platz.3", "Ak4(18+ Jahre)", "Zeit.3", "Bahn.3"],
-        "Ak1 Mitarbeiter": ["Platz.4", "Ak1 Mitarbeiter", "Zeit.4", "Bahn.4"]
-    }
-    
     data = {}
     for label, cols in columns_info.items():
-        data[label] = df[cols].to_dict(orient='records')
-    
+        try:
+            data[label] = df[cols].to_dict(orient='records')
+        except KeyError as e:
+            logging.error(f"Missing column in DataFrame: {e}")
+            data[label] = []  # Fallback to empty data if columns are missing
+
     return jsonify(data)
 
 if __name__ == '__main__':
-    daten_laden()  # Initiales Laden der Daten
+    daten_laden()  # Initial data load
     app.run(debug=True)

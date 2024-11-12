@@ -5,6 +5,38 @@ body {
     margin: 0;
     padding: 0;
 }
+h3 {
+    color: #ffffff;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.bg-red {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+
+.bg-green {
+    background-color: #00ff0098;
+    color: #ffffff;
+}
+
+.bg-yellow {
+    background-color: #ffff009f;
+    color: #ffffff;
+}
+
+.bg-blue {
+    background-color: #0000ff;
+    color: #ffffff;
+}
+
+.bg-purple {
+    background-color: #800080;
+    color: #ffffff;
+}
+
+
 
 /* Container-Einstellungen */
 .container {
@@ -140,7 +172,7 @@ th {
 }
 
 tr:first-child td {
-    background-color: #e9ecef; /* Hintergrundfarbe für die erste Zeile */
+    background-color: #f7a000; /* Hintergrundfarbe für die erste Zeile */
     position: sticky;
     top: 36px; /* Abstand unter der Kopfzeile */
     z-index: 1;
