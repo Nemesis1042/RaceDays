@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify # type: ignore
+from flask import Flask, render_template, jsonify
 import pandas as pd
 import logging
 import threading
@@ -11,7 +11,7 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Path to the Excel file
-datei_pfad = 'static/RaceDays_Beispiel.xlsx'
+datei_pfad = 'static/RaceDays_Beispiel.ods'
 df = pd.DataFrame()
 
 # Column configuration for each category
@@ -23,7 +23,7 @@ columns_info = {
     "Ak1 Mitarbeiter": ["Platz.4", "Ak1 Mitarbeiter", "Zeit.4", "Bahn.4"]
 }
 
-# Farben für jede Kategorie (im HTML-Template verwendet)
+# Colors for each category (used in the HTML template)
 colors = {
     "Ak1 (5-8 Jahre)": "bg-red",
     "Ak2 (9-12 Jahre)": "bg-green",
@@ -31,6 +31,9 @@ colors = {
     "Ak4 (18+ Jahre)": "bg-blue",
     "Ak1 Mitarbeiter": "bg-purple"
 }
+
+# Number of rows to display per category
+max_rows = 60  # Change this to the desired number of rows
 
 # Function to load data from Excel file
 def daten_laden():
@@ -43,10 +46,17 @@ def daten_laden():
             df = pd.read_excel(datei_pfad, engine='odf', sheet_name='Tabelle1')
         else:
             raise ValueError("Unsupported file format. Only .xlsx and .ods are supported.")
+        
+        # Convert all "Platz" columns to integers, ignoring errors
+        for col in df.columns:
+            if "Platz" in col:
+                df[col] = pd.to_numeric(df[col], downcast='integer', errors='coerce').astype('Int64')
+
         logging.debug(f"File successfully read. Rows: {len(df)}")
     except Exception as e:
         logging.error(f"Error reading file: {e}")
         df = pd.DataFrame()  # Fallback to an empty DataFrame in case of error
+
 
 # Background process to update data every 5 minutes
 def daten_aktualisieren():
@@ -65,7 +75,8 @@ def index():
     data = {}
     for label, cols in columns_info.items():
         try:
-            data[label] = df[cols].to_dict(orient='records')
+            # Limit the number of rows per category to `max_rows`
+            data[label] = df[cols].head(max_rows).to_dict(orient='records')
         except KeyError as e:
             logging.error(f"Missing column in DataFrame: {e}")
             data[label] = []  # Fallback to empty data if columns are missing
@@ -78,7 +89,8 @@ def daten():
     data = {}
     for label, cols in columns_info.items():
         try:
-            data[label] = df[cols].to_dict(orient='records')
+            # Limit the number of rows per category to `max_rows`
+            data[label] = df[cols].head(max_rows).to_dict(orient='records')
         except KeyError as e:
             logging.error(f"Missing column in DataFrame: {e}")
             data[label] = []  # Fallback to empty data if columns are missing
