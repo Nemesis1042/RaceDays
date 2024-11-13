@@ -40,7 +40,7 @@ h3 {
 
 /* Container-Einstellungen */
 .container {
-    margin-top: 50px;
+    margin-top: 10px;
 }
 
 /* Überschrift Stil */
@@ -132,7 +132,7 @@ body, html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-height: 90vh; /* Maximale Höhe des Containers */
+    max-height: 99vh; /* Maximale Höhe des Containers */
     overflow-y: auto; /* Ermöglicht Scrollen im Container */
 }
 
@@ -146,9 +146,9 @@ body, html {
 
 .table-container {
     max-width: 100%;
-    max-height: 800px; /* Erhöhte Höhe für die scrollbare Tabelle */
+    max-height: 1200px; /* Erhöhte Höhe für die scrollbare Tabelle */
     overflow-y: auto; /* Ermöglicht vertikales Scrollen der Tabelle */
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 table {

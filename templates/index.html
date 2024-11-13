@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrera Race Day Ergebnisse</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <meta http-equiv="refresh" content="30">
+    <meta http-equiv="refresh" content="35">
 
 </head>
 <body>
@@ -67,7 +67,7 @@
         }
 
         // Funktion zum langsamen Scrollen der Tabelle nach unten
-        /*function scrollTableToBottom(container, duration) {
+        function scrollTableToBottom(container, duration) {
             const start = container.scrollTop;
             const end = container.scrollHeight - container.clientHeight;
             const distance = end - start;
@@ -86,7 +86,7 @@
             }
 
             requestAnimationFrame(animateScroll);
-        }*/
+        }
 
         // Funktion zum langsamen Scrollen der Tabelle nach oben
         function scrollTableToTop(container, duration) {

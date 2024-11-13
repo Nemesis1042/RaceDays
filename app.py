@@ -16,11 +16,11 @@ df = pd.DataFrame()
 
 # Column configuration for each category
 columns_info = {
-    "Ak1 (5-8 Jahre)": ["Platz", "Ak1(5-8 Jahre)", "Zeit", "Bahn"],
-    "Ak2 (9-12 Jahre)": ["Platz.1", "Ak2(9-12 Jahre)", "Zeit.1", "Bahn.1"],
-    "Ak3 (13-17 Jahre)": ["Platz.2", "Ak3(13-17 Jahre)", "Zeit.2", "Bahn.2"],
-    "Ak4 (18+ Jahre)": ["Platz.3", "Ak4(18+ Jahre)", "Zeit.3", "Bahn.3"],
-    "Ak1 Mitarbeiter": ["Platz.4", "Ak1 Mitarbeiter", "Zeit.4", "Bahn.4"]
+    "Ak1 (5-8 Jahre)":      ["Platz", "Ak1(5-8 Jahre)",     "Zeit", "Bahn"],
+    "Ak2 (9-12 Jahre)":     ["Platz", "Ak2(9-12 Jahre)",    "Zeit", "Bahn"],
+    "Ak3 (13-17 Jahre)":    ["Platz", "Ak3(13-17 Jahre)",   "Zeit", "Bahn"],
+    "Ak4 (18+ Jahre)":      ["Platz", "Ak4(18+ Jahre)",     "Zeit", "Bahn"],
+    "Ak1 Mitarbeiter":      ["Platz", "Ak1 Mitarbeiter",    "Zeit", "Bahn"]
 }
 
 # Colors for each category (used in the HTML template)
